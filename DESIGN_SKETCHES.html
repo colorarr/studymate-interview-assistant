@@ -1,0 +1,1545 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StudyMate Interview Assistant - 全量设计草图</title>
+  <style>
+    :root {
+      --sm-color-primary: #256d85;
+      --sm-color-primary-hover: #1f5d72;
+      --sm-color-primary-active: #18495a;
+      --sm-color-primary-soft: #eaf5f7;
+      --sm-color-accent: #f59e0b;
+      --sm-color-accent-soft: #fff7e6;
+      --sm-color-success: #16a34a;
+      --sm-color-success-soft: #eaf8ef;
+      --sm-color-warning: #d97706;
+      --sm-color-warning-soft: #fff4df;
+      --sm-color-danger: #dc2626;
+      --sm-color-danger-soft: #fdecec;
+      --sm-color-bg: #f6f8fa;
+      --sm-color-surface: #ffffff;
+      --sm-color-surface-muted: #f1f5f8;
+      --sm-color-border: #dde5ea;
+      --sm-color-border-subtle: #e8eef2;
+      --sm-color-text: #172026;
+      --sm-color-text-secondary: #4b5b66;
+      --sm-color-text-muted: #7a8a95;
+      --sm-color-text-disabled: #a8b4bc;
+      --sm-color-text-inverse: #ffffff;
+      --sm-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --sm-font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      --sm-radius-xs: 4px;
+      --sm-radius-sm: 6px;
+      --sm-radius-md: 8px;
+      --sm-shadow-input-bar: 0 -4px 16px rgba(23, 32, 38, 0.06);
+      --sm-shadow-popover: 0 8px 24px rgba(23, 32, 38, 0.10);
+      --sm-shadow-modal: 0 12px 32px rgba(23, 32, 38, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--sm-color-text);
+      background: var(--sm-color-bg);
+      font-family: var(--sm-font-sans);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .board {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .board-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      padding: 24px;
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--sm-color-primary);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: 28px;
+      line-height: 1.3;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin-bottom: 0;
+      color: var(--sm-color-text-secondary);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .section {
+      margin-top: 32px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section-note {
+      max-width: 680px;
+      margin: 0;
+      color: var(--sm-color-text-secondary);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .span-4 {
+      grid-column: span 4;
+    }
+
+    .span-5 {
+      grid-column: span 5;
+    }
+
+    .span-6 {
+      grid-column: span 6;
+    }
+
+    .span-7 {
+      grid-column: span 7;
+    }
+
+    .span-8 {
+      grid-column: span 8;
+    }
+
+    .span-12 {
+      grid-column: span 12;
+    }
+
+    .device {
+      min-width: 0;
+      overflow: hidden;
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .device-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 44px;
+      padding: 10px 14px;
+      background: var(--sm-color-surface-muted);
+      border-bottom: 1px solid var(--sm-color-border);
+      color: var(--sm-color-text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .phone {
+      width: min(375px, 100%);
+      margin: 0 auto;
+    }
+
+    .screen {
+      min-height: 620px;
+      background: var(--sm-color-bg);
+    }
+
+    .screen.web {
+      min-height: 640px;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 28px;
+      padding: 6px 16px;
+      color: var(--sm-color-text-muted);
+      font-size: 11px;
+      background: var(--sm-color-surface);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 56px;
+      padding: 10px 16px;
+      background: var(--sm-color-surface);
+      border-bottom: 1px solid var(--sm-color-border-subtle);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-weight: 700;
+    }
+
+    .brand-mark,
+    .avatar,
+    .icon-box {
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 32px;
+      height: 32px;
+      color: var(--sm-color-primary);
+      background: var(--sm-color-primary-soft);
+      border: 1px solid #d2ebef;
+      border-radius: var(--sm-radius-sm);
+      font-weight: 700;
+    }
+
+    .avatar {
+      color: var(--sm-color-text-inverse);
+      background: var(--sm-color-primary);
+      border-color: var(--sm-color-primary);
+      border-radius: 999px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav a,
+    .tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 0 12px;
+      color: var(--sm-color-text-secondary);
+      text-decoration: none;
+      border-radius: var(--sm-radius-sm);
+    }
+
+    .nav a.active,
+    .tab.active {
+      color: var(--sm-color-primary);
+      background: var(--sm-color-primary-soft);
+      font-weight: 600;
+    }
+
+    .page {
+      padding: 16px;
+    }
+
+    .web .page {
+      padding: 24px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      min-height: 584px;
+    }
+
+    .sidebar {
+      padding: 16px;
+      background: var(--sm-color-surface);
+      border-right: 1px solid var(--sm-color-border);
+    }
+
+    .main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .auth-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 32px;
+      min-height: 584px;
+      padding: 32px;
+      align-items: center;
+    }
+
+    .auth-panel {
+      padding: 24px;
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .auth-copy {
+      max-width: 480px;
+    }
+
+    .auth-copy h2 {
+      margin-bottom: 10px;
+      font-size: 30px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .label {
+      color: var(--sm-color-text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .input,
+    .textarea,
+    .search {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      color: var(--sm-color-text);
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-sm);
+      outline: none;
+    }
+
+    .textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .input:focus,
+    .textarea:focus,
+    .search:focus {
+      border-color: var(--sm-color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 109, 133, 0.12);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 14px;
+      color: var(--sm-color-text);
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-sm);
+      cursor: default;
+      font-weight: 600;
+    }
+
+    .btn.primary {
+      color: var(--sm-color-text-inverse);
+      background: var(--sm-color-primary);
+      border-color: var(--sm-color-primary);
+    }
+
+    .btn.danger {
+      color: var(--sm-color-danger);
+      background: var(--sm-color-danger-soft);
+      border-color: #f5c8c8;
+    }
+
+    .btn.text {
+      min-height: 36px;
+      padding: 0;
+      color: var(--sm-color-primary);
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .btn.icon {
+      width: 44px;
+      padding: 0;
+    }
+
+    .btn.full {
+      width: 100%;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 24px;
+      padding: 2px 8px;
+      color: var(--sm-color-primary);
+      background: var(--sm-color-primary-soft);
+      border: 1px solid #d5eaee;
+      border-radius: var(--sm-radius-xs);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tag.success {
+      color: var(--sm-color-success);
+      background: var(--sm-color-success-soft);
+      border-color: #ccefd8;
+    }
+
+    .tag.warning {
+      color: var(--sm-color-warning);
+      background: var(--sm-color-warning-soft);
+      border-color: #ffe0aa;
+    }
+
+    .tag.danger {
+      color: var(--sm-color-danger);
+      background: var(--sm-color-danger-soft);
+      border-color: #f5c8c8;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .toolbar .search {
+      max-width: 360px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card,
+    .panel,
+    .list-item,
+    .source-card,
+    .empty,
+    .toast,
+    .modal,
+    .bottom-sheet {
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .card-head,
+    .item-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      margin: 0 0 4px;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .muted {
+      color: var(--sm-color-text-muted);
+    }
+
+    .secondary {
+      color: var(--sm-color-text-secondary);
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin: 12px 0;
+      color: var(--sm-color-text-muted);
+      font-size: 12px;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .stat {
+      padding: 10px;
+      background: var(--sm-color-surface-muted);
+      border-radius: var(--sm-radius-sm);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .stat span {
+      color: var(--sm-color-text-muted);
+      font-size: 12px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .list-item {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+    }
+
+    .file-type {
+      display: inline-grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      color: var(--sm-color-primary);
+      background: var(--sm-color-primary-soft);
+      border: 1px solid #d2ebef;
+      border-radius: var(--sm-radius-sm);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .file-type.warn {
+      color: var(--sm-color-warning);
+      background: var(--sm-color-warning-soft);
+      border-color: #ffe0aa;
+    }
+
+    .file-type.danger {
+      color: var(--sm-color-danger);
+      background: var(--sm-color-danger-soft);
+      border-color: #f5c8c8;
+    }
+
+    .progress {
+      overflow: hidden;
+      height: 8px;
+      background: var(--sm-color-surface-muted);
+      border-radius: 999px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      background: var(--sm-color-primary);
+      border-radius: inherit;
+    }
+
+    .empty {
+      display: grid;
+      place-items: center;
+      min-height: 260px;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .empty-mark {
+      display: grid;
+      place-items: center;
+      width: 72px;
+      height: 72px;
+      margin-bottom: 16px;
+      color: var(--sm-color-primary);
+      background: var(--sm-color-primary-soft);
+      border: 1px solid #d2ebef;
+      border-radius: var(--sm-radius-md);
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .chat-shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 640px;
+      background: var(--sm-color-bg);
+    }
+
+    .chat-side {
+      padding: 16px;
+      background: var(--sm-color-surface);
+      border-right: 1px solid var(--sm-color-border);
+    }
+
+    .chat-main {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      min-width: 0;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 64px;
+      padding: 12px 20px;
+      background: var(--sm-color-surface);
+      border-bottom: 1px solid var(--sm-color-border-subtle);
+    }
+
+    .messages {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      padding: 22px 20px;
+      overflow: hidden;
+    }
+
+    .bubble {
+      max-width: 760px;
+      padding: 12px 14px;
+      border-radius: var(--sm-radius-md);
+    }
+
+    .bubble.user {
+      justify-self: end;
+      max-width: 78%;
+      color: var(--sm-color-text-inverse);
+      background: var(--sm-color-primary);
+    }
+
+    .bubble.ai {
+      justify-self: start;
+      width: min(760px, 92%);
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+    }
+
+    .bubble.failed {
+      border-color: #f5c8c8;
+      background: var(--sm-color-danger-soft);
+    }
+
+    .code {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      overflow: hidden;
+      color: #23323a;
+      background: #f2f6f8;
+      border: 1px solid var(--sm-color-border-subtle);
+      border-radius: var(--sm-radius-sm);
+      font-family: var(--sm-font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .source-grid {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .source-card {
+      padding: 10px;
+      background: var(--sm-color-primary-soft);
+      border-color: #d2ebef;
+    }
+
+    .source-card strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .composer {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      padding: 12px 20px;
+      background: var(--sm-color-surface);
+      border-top: 1px solid var(--sm-color-border);
+      box-shadow: var(--sm-shadow-input-bar);
+    }
+
+    .mobile-composer {
+      position: sticky;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 44px;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--sm-color-surface);
+      border-top: 1px solid var(--sm-color-border);
+      box-shadow: var(--sm-shadow-input-bar);
+    }
+
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      min-height: 56px;
+      background: var(--sm-color-surface);
+      border-top: 1px solid var(--sm-color-border);
+    }
+
+    .bottom-nav a {
+      display: grid;
+      place-items: center;
+      color: var(--sm-color-text-muted);
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .bottom-nav a.active {
+      color: var(--sm-color-primary);
+      font-weight: 700;
+    }
+
+    .phone-page {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      min-height: 620px;
+    }
+
+    .phone-content {
+      padding: 16px;
+    }
+
+    .mini-cards {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini-card {
+      padding: 14px;
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .modal-backdrop {
+      display: grid;
+      place-items: center;
+      min-height: 360px;
+      padding: 24px;
+      background: rgba(23, 32, 38, 0.16);
+    }
+
+    .modal {
+      width: min(440px, 100%);
+      padding: 20px;
+      box-shadow: var(--sm-shadow-modal);
+    }
+
+    .bottom-sheet-wrap {
+      display: grid;
+      align-items: end;
+      min-height: 620px;
+      background: rgba(23, 32, 38, 0.16);
+    }
+
+    .bottom-sheet {
+      padding: 18px 16px 20px;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+      box-shadow: var(--sm-shadow-modal);
+    }
+
+    .handle {
+      width: 40px;
+      height: 4px;
+      margin: 0 auto 16px;
+      background: var(--sm-color-border);
+      border-radius: 999px;
+    }
+
+    .upload-zone {
+      display: grid;
+      place-items: center;
+      min-height: 180px;
+      padding: 24px;
+      text-align: center;
+      background: var(--sm-color-primary-soft);
+      border: 1px dashed var(--sm-color-primary);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .flow-step {
+      padding: 12px;
+      text-align: center;
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .flow-step strong {
+      display: block;
+      color: var(--sm-color-primary);
+    }
+
+    .spec-table {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .spec-tile {
+      padding: 14px;
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .swatch {
+      overflow: hidden;
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .swatch span {
+      display: block;
+      height: 54px;
+    }
+
+    .swatch small {
+      display: block;
+      padding: 8px;
+      color: var(--sm-color-text-secondary);
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .states {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .state-card {
+      min-height: 168px;
+      padding: 14px;
+      background: var(--sm-color-surface);
+      border: 1px solid var(--sm-color-border);
+      border-radius: var(--sm-radius-md);
+    }
+
+    .skeleton {
+      display: grid;
+      gap: 8px;
+    }
+
+    .sk-line {
+      height: 12px;
+      background: linear-gradient(90deg, #e9eff3, #f6f8fa, #e9eff3);
+      border-radius: 999px;
+    }
+
+    @media (max-width: 1100px) {
+      .span-4,
+      .span-5,
+      .span-6,
+      .span-7,
+      .span-8 {
+        grid-column: span 12;
+      }
+
+      .cards,
+      .states,
+      .spec-table,
+      .palette {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .board {
+        padding: 16px;
+      }
+
+      .board-header,
+      .auth-layout,
+      .split,
+      .chat-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .legend,
+      .section-head,
+      .toolbar {
+        align-items: stretch;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .cards,
+      .states,
+      .spec-table,
+      .palette,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar,
+      .chat-side {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <header class="board-header">
+      <div>
+        <p class="eyebrow">StudyMate Interview Assistant</p>
+        <h1>全量系统设计草图</h1>
+        <p class="lead">基于 DESIGN_SYSTEM.md 的中保真草图板，覆盖登录、注册、知识库、上传、问答、历史会话、我的页面、弹层与关键状态。视觉方向是安静可靠的个人学习工作台，核心强调资料管理清晰、AI 问答可追溯。</p>
+      </div>
+      <div class="legend">
+        <span class="tag">Web</span>
+        <span class="tag">Mobile</span>
+        <span class="tag success">核心路径</span>
+        <span class="tag warning">长任务状态</span>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>0. 主流程信息架构</h2>
+          <p class="section-note">用户从登录进入知识库列表，创建知识库后上传资料，等待解析完成，进入聊天页进行追问，并可从历史会话回到旧上下文。</p>
+        </div>
+      </div>
+      <div class="flow">
+        <div class="flow-step"><strong>01</strong>登录/注册</div>
+        <div class="flow-step"><strong>02</strong>知识库列表</div>
+        <div class="flow-step"><strong>03</strong>详情与上传</div>
+        <div class="flow-step"><strong>04</strong>AI 问答</div>
+        <div class="flow-step"><strong>05</strong>历史复习</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>1. 登录与注册</h2>
+          <p class="section-note">入口保持轻量，移动端主按钮位于下半屏可触达区域。左侧价值说明只在 Web 展示，避免移动端首屏被营销内容挤占。</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="device span-7">
+          <div class="device-title">Web 登录页</div>
+          <div class="screen web">
+            <div class="auth-layout">
+              <div class="auth-copy">
+                <div class="brand" style="margin-bottom: 24px;"><span class="brand-mark">S</span><span>StudyMate</span></div>
+                <h2>把面试资料变成可追问的知识库</h2>
+                <p class="secondary">上传 Java 后端、数据库、Redis、MQ 等资料，围绕自己的内容进行 AI 问答，并查看答案引用来源。</p>
+                <div class="stat-row">
+                  <div class="stat"><strong>4</strong><span>文件类型</span></div>
+                  <div class="stat"><strong>SSE</strong><span>流式回答</span></div>
+                  <div class="stat"><strong>RAG</strong><span>引用溯源</span></div>
+                </div>
+              </div>
+              <form class="auth-panel">
+                <h3>登录</h3>
+                <div class="field">
+                  <label class="label">用户名</label>
+                  <input class="input" value="java_interview">
+                </div>
+                <div class="field">
+                  <label class="label">密码</label>
+                  <input class="input" type="password" value="12345678">
+                </div>
+                <button class="btn primary full" type="button">登录</button>
+                <div class="btn-row" style="justify-content: center; margin-top: 12px;">
+                  <button class="btn text" type="button">没有账号？去注册</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </article>
+
+        <article class="device phone span-5">
+          <div class="device-title">Mobile 注册页</div>
+          <div class="screen">
+            <div class="status-bar"><span>9:41</span><span>StudyMate</span></div>
+            <div class="phone-content" style="padding-top: 56px;">
+              <div class="brand" style="margin-bottom: 28px;"><span class="brand-mark">S</span><span>StudyMate</span></div>
+              <h2>创建账号</h2>
+              <p class="secondary">保存你的知识库、文件处理结果和历史会话。</p>
+              <div class="field"><label class="label">用户名</label><input class="input" value="backend_dev"></div>
+              <div class="field"><label class="label">昵称</label><input class="input" value="小赵"></div>
+              <div class="field"><label class="label">密码</label><input class="input" type="password" value="12345678"></div>
+              <button class="btn primary full" type="button">确认注册</button>
+              <button class="btn text full" type="button">返回登录</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>2. 首页 / 知识库列表</h2>
+          <p class="section-note">列表要优先让用户判断“有哪些资料空间、是否可问答、最后处理到哪一步”。创建入口清晰，但不压过搜索和内容扫描。</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="device span-8">
+          <div class="device-title">Web 知识库工作台</div>
+          <div class="screen web">
+            <div class="topbar">
+              <div class="brand"><span class="brand-mark">S</span><span>StudyMate</span></div>
+              <nav class="nav">
+                <a class="active" href="#">知识库</a>
+                <a href="#">历史</a>
+                <a href="#">我的</a>
+              </nav>
+              <span class="avatar">赵</span>
+            </div>
+            <div class="page">
+              <div class="toolbar">
+                <div>
+                  <h2>我的知识库</h2>
+                  <p class="muted" style="margin: 0;">管理面试资料，进入问答或继续上传。</p>
+                </div>
+                <div class="btn-row">
+                  <input class="search" value="搜索 Redis / JVM / MQ">
+                  <button class="btn primary" type="button">创建知识库</button>
+                </div>
+              </div>
+              <div class="cards">
+                <div class="card">
+                  <div class="card-head">
+                    <div><p class="card-title">Java 基础八股</p><span class="tag success">可问答</span></div>
+                    <button class="btn icon" type="button">⋯</button>
+                  </div>
+                  <p class="secondary">集合、并发、JVM、Spring 常见题。</p>
+                  <div class="meta"><span>文件 12</span><span>分片 1,284</span><span>今天 15:20</span></div>
+                  <button class="btn primary full" type="button">开始问答</button>
+                </div>
+                <div class="card">
+                  <div class="card-head">
+                    <div><p class="card-title">Redis 高频题</p><span class="tag warning">建立索引中</span></div>
+                    <button class="btn icon" type="button">⋯</button>
+                  </div>
+                  <p class="secondary">缓存穿透、雪崩、持久化、集群。</p>
+                  <div class="progress"><span style="width: 68%;"></span></div>
+                  <div class="meta"><span>文件 5</span><span>正在生成知识切片</span></div>
+                  <button class="btn full" type="button">查看详情</button>
+                </div>
+                <div class="card">
+                  <div class="card-head">
+                    <div><p class="card-title">消息队列专题</p><span class="tag danger">处理失败</span></div>
+                    <button class="btn icon" type="button">⋯</button>
+                  </div>
+                  <p class="secondary">Kafka、RabbitMQ、RocketMQ 对比。</p>
+                  <div class="meta"><span>文件 3</span><span>解析失败 1</span><span>昨天</span></div>
+                  <button class="btn full" type="button">查看失败原因</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="device phone span-4">
+          <div class="device-title">Mobile 空知识库状态</div>
+          <div class="screen phone-page">
+            <div class="status-bar"><span>9:41</span><span>StudyMate</span></div>
+            <div class="topbar"><strong>知识库</strong><button class="btn icon" type="button">＋</button></div>
+            <div class="phone-content">
+              <input class="search" value="搜索知识库">
+              <div class="empty" style="margin-top: 14px;">
+                <div class="empty-mark">KB</div>
+                <h3>还没有知识库</h3>
+                <p class="secondary">先创建一个面试主题，再上传资料开始问答。</p>
+                <button class="btn primary" type="button">创建知识库</button>
+              </div>
+            </div>
+            <nav class="bottom-nav"><a class="active" href="#">知识库</a><a href="#">历史</a><a href="#">我的</a></nav>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>3. 创建知识库</h2>
+          <p class="section-note">Web 用居中弹层，移动端用底部弹层。表单只保留名称和描述，成功后可进入详情或继续留在列表。</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="device span-6">
+          <div class="device-title">Web 创建弹层</div>
+          <div class="modal-backdrop">
+            <div class="modal">
+              <h3>创建知识库</h3>
+              <p class="secondary">为一个面试主题建立资料空间，后续文件会在这里统一管理。</p>
+              <div class="field"><label class="label">知识库名称</label><input class="input" value="MySQL 面试专题"></div>
+              <div class="field"><label class="label">描述</label><textarea class="textarea">索引、事务、锁、主从复制相关资料。</textarea></div>
+              <div class="btn-row" style="justify-content: flex-end;">
+                <button class="btn" type="button">取消</button>
+                <button class="btn primary" type="button">创建知识库</button>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="device phone span-6">
+          <div class="device-title">Mobile 底部创建层</div>
+          <div class="bottom-sheet-wrap">
+            <div class="bottom-sheet">
+              <div class="handle"></div>
+              <h3>创建知识库</h3>
+              <div class="field"><label class="label">知识库名称</label><input class="input" value="Spring Boot 高频题"></div>
+              <div class="field"><label class="label">描述</label><textarea class="textarea">自动配置、Bean 生命周期、事务传播。</textarea></div>
+              <button class="btn primary full" type="button">创建知识库</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>4. 知识库详情与文件管理</h2>
+          <p class="section-note">详情页承担上传、文件状态、重新解析和开始问答。文件状态必须以标签、文字和操作一起表达。</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="device span-8">
+          <div class="device-title">Web 知识库详情</div>
+          <div class="screen web">
+            <div class="topbar">
+              <div class="brand"><span class="brand-mark">S</span><span>Java 基础八股</span></div>
+              <div class="btn-row"><button class="btn" type="button">上传文件</button><button class="btn primary" type="button">开始问答</button></div>
+            </div>
+            <div class="page">
+              <div class="panel card" style="margin-bottom: 16px;">
+                <div class="card-head">
+                  <div>
+                    <h2>Java 基础八股</h2>
+                    <p class="secondary">集合、并发、JVM、Spring 常见题，适合面试前快速复习。</p>
+                  </div>
+                  <span class="tag success">可问答</span>
+                </div>
+                <div class="stat-row">
+                  <div class="stat"><strong>12</strong><span>资料文件</span></div>
+                  <div class="stat"><strong>1,284</strong><span>知识分片</span></div>
+                  <div class="stat"><strong>36</strong><span>历史会话</span></div>
+                </div>
+              </div>
+              <h3>文件列表</h3>
+              <div class="list">
+                <div class="list-item">
+                  <span class="file-type">PDF</span>
+                  <div><strong>Java并发编程核心.pdf</strong><div class="meta"><span>4.2 MB</span><span>今天 14:20</span></div></div>
+                  <div class="btn-row"><span class="tag success">解析成功</span><button class="btn icon" type="button">⋯</button></div>
+                </div>
+                <div class="list-item">
+                  <span class="file-type warn">MD</span>
+                  <div><strong>JVM调优笔记.md</strong><div class="meta"><span>860 KB</span><span>正在建立检索索引</span></div><div class="progress"><span style="width: 72%;"></span></div></div>
+                  <span class="tag warning">处理中</span>
+                </div>
+                <div class="list-item">
+                  <span class="file-type danger">TXT</span>
+                  <div><strong>Spring事务问答.txt</strong><div class="meta"><span>126 KB</span><span>编码解析失败</span></div></div>
+                  <div class="btn-row"><span class="tag danger">解析失败</span><button class="btn" type="button">重新解析</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="device phone span-4">
+          <div class="device-title">Mobile 详情页</div>
+          <div class="screen phone-page">
+            <div class="status-bar"><span>9:41</span><span>StudyMate</span></div>
+            <div class="topbar"><button class="btn icon" type="button">‹</button><strong>Redis 高频题</strong><button class="btn icon" type="button">⋯</button></div>
+            <div class="phone-content">
+              <div class="mini-card">
+                <div class="card-head"><h3>Redis 高频题</h3><span class="tag warning">处理中</span></div>
+                <p class="secondary">缓存穿透、雪崩、持久化、集群。</p>
+                <div class="progress"><span style="width: 68%;"></span></div>
+                <p class="muted" style="margin: 8px 0 0;">正在生成知识切片</p>
+              </div>
+              <div class="mini-cards" style="margin-top: 12px;">
+                <div class="list-item" style="grid-template-columns: auto 1fr;">
+                  <span class="file-type">PDF</span><div><strong>Redis设计与实现.pdf</strong><div class="meta"><span>解析成功</span><span>5.1 MB</span></div></div>
+                </div>
+                <div class="list-item" style="grid-template-columns: auto 1fr;">
+                  <span class="file-type warn">DOC</span><div><strong>Redis面试题.docx</strong><div class="meta"><span>建立索引中</span><span>2.7 MB</span></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="mobile-composer" style="grid-template-columns: 1fr 1fr;"><button class="btn" type="button">上传文件</button><button class="btn primary" type="button">开始问答</button></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>5. 文件上传</h2>
+          <p class="section-note">上传草图覆盖选择、上传中、处理成功和失败恢复。用户始终能看到文件列表与下一步。</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="device span-6">
+          <div class="device-title">Web 上传页 / 弹层内容</div>
+          <div class="screen web page">
+            <h2>上传资料</h2>
+            <div class="upload-zone">
+              <div>
+                <div class="empty-mark" style="margin-left: auto; margin-right: auto;">UP</div>
+                <h3>拖拽文件到这里，或点击选择</h3>
+                <p class="secondary">支持 PDF、Word、Markdown、TXT。单个文件建议小于 50 MB。</p>
+                <button class="btn primary" type="button">选择文件</button>
+              </div>
+            </div>
+            <h3 style="margin-top: 20px;">待上传文件</h3>
+            <div class="list">
+              <div class="list-item">
+                <span class="file-type">PDF</span>
+                <div><strong>MySQL索引专题.pdf</strong><div class="meta"><span>8.4 MB</span><span>上传中 46%</span></div><div class="progress"><span style="width: 46%;"></span></div></div>
+                <span class="tag warning">上传中</span>
+              </div>
+              <div class="list-item">
+                <span class="file-type">MD</span>
+                <div><strong>事务隔离级别.md</strong><div class="meta"><span>320 KB</span><span>等待上传</span></div></div>
+                <span class="tag">待上传</span>
+              </div>
+            </div>
+            <div class="btn-row" style="justify-content: flex-end; margin-top: 16px;">
+              <button class="btn" type="button">取消</button><button class="btn primary" type="button">开始上传</button>
+            </div>
+          </div>
+        </article>
+        <article class="device phone span-6">
+          <div class="device-title">Mobile 上传结果</div>
+          <div class="screen phone-page">
+            <div class="status-bar"><span>9:41</span><span>StudyMate</span></div>
+            <div class="topbar"><button class="btn icon" type="button">‹</button><strong>上传资料</strong></div>
+            <div class="phone-content">
+              <div class="mini-card">
+                <div class="card-head"><h3>处理结果</h3><span class="tag warning">2/3 完成</span></div>
+                <p class="secondary">上传已完成，系统正在处理文件。完成后可进入问答。</p>
+              </div>
+              <div class="mini-cards" style="margin-top: 12px;">
+                <div class="mini-card"><div class="card-head"><strong>MySQL索引专题.pdf</strong><span class="tag success">解析成功</span></div><p class="muted">已生成 246 个知识分片。</p></div>
+                <div class="mini-card"><div class="card-head"><strong>锁机制整理.docx</strong><span class="tag warning">处理中</span></div><div class="progress"><span style="width: 82%;"></span></div><p class="muted" style="margin-top: 8px;">正在建立检索索引。</p></div>
+                <div class="mini-card"><div class="card-head"><strong>老笔记.txt</strong><span class="tag danger">失败</span></div><p class="muted">编码解析失败，可重新上传 UTF-8 文件。</p><button class="btn" type="button">重新上传</button></div>
+              </div>
+            </div>
+            <div class="mobile-composer" style="grid-template-columns: 1fr;"><button class="btn primary full" type="button">返回知识库详情</button></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>6. 聊天问答核心页</h2>
+          <p class="section-note">聊天页是最高优先级。Web 采用历史侧栏 + 主阅读区，移动端采用单列沉浸式问答，底部输入区固定且不遮挡内容。</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="device span-8">
+          <div class="device-title">Web 聊天问答页</div>
+          <div class="screen web">
+            <div class="chat-shell">
+              <aside class="chat-side">
+                <button class="btn primary full" type="button">新建会话</button>
+                <div class="list" style="margin-top: 14px;">
+                  <div class="mini-card"><strong>HashMap 扩容机制</strong><p class="muted" style="margin: 4px 0 0;">Java 基础八股 · 10 分钟前</p></div>
+                  <div class="mini-card"><strong>线程池参数怎么答</strong><p class="muted" style="margin: 4px 0 0;">Java 基础八股 · 昨天</p></div>
+                  <div class="mini-card"><strong>JVM 垃圾回收器</strong><p class="muted" style="margin: 4px 0 0;">Java 基础八股 · 周一</p></div>
+                </div>
+              </aside>
+              <section class="chat-main">
+                <div class="chat-header">
+                  <div><strong>Java 基础八股</strong><div class="muted">当前会话：HashMap 扩容机制</div></div>
+                  <span class="tag success">引用来源已开启</span>
+                </div>
+                <div class="messages">
+                  <div class="bubble user">HashMap 为什么线程不安全？面试里怎么答比较完整？</div>
+                  <div class="bubble ai">
+                    <p>可以从三个层次回答：数据结构、并发写入风险和实际替代方案。</p>
+                    <p>HashMap 在扩容、链表转红黑树、put 覆盖等过程中没有同步保护，多线程同时写入可能导致数据覆盖、结构异常或读取到不一致状态。</p>
+                    <code class="code">Map&lt;String, Object&gt; map = new ConcurrentHashMap&lt;&gt;();</code>
+                    <p>面试回答建议最后补一句：如果存在并发读写，应优先使用 ConcurrentHashMap 或通过外部同步控制访问。</p>
+                    <div class="source-grid">
+                      <div class="source-card"><strong>[1] Java并发编程核心.pdf</strong><span class="muted">HashMap 的 put 和 resize 过程都不是原子操作...</span></div>
+                      <div class="source-card"><strong>[2] 集合框架面试题.md</strong><span class="muted">ConcurrentHashMap 通过更细粒度的并发控制提升吞吐...</span></div>
+                    </div>
+                  </div>
+                  <div class="bubble user">那 ConcurrentHashMap 在 JDK 1.8 做了什么优化？</div>
+                  <div class="bubble ai">
+                    <span class="tag warning">AI 正在生成</span>
+                    <p style="margin-top: 10px;">JDK 1.8 中 ConcurrentHashMap 取消了 Segment 分段锁...</p>
+                  </div>
+                </div>
+                <div class="composer">
+                  <textarea class="input" style="min-height: 44px;" rows="1">继续追问这道题的源码细节</textarea>
+                  <button class="btn primary" type="button">发送</button>
+                </div>
+              </section>
+            </div>
+          </div>
+        </article>
+        <article class="device phone span-4">
+          <div class="device-title">Mobile 聊天问答页</div>
+          <div class="screen phone-page">
+            <div class="status-bar"><span>9:41</span><span>StudyMate</span></div>
+            <div class="topbar"><button class="btn icon" type="button">‹</button><div><strong>Java 基础八股</strong><div class="muted" style="font-size: 12px;">HashMap 扩容机制</div></div><button class="btn icon" type="button">≡</button></div>
+            <div class="messages" style="padding: 16px;">
+              <div class="bubble user">HashMap 为什么线程不安全？</div>
+              <div class="bubble ai" style="width: 100%;">
+                <p>核心原因是 HashMap 的写入和扩容没有同步保护。</p>
+                <div class="source-grid">
+                  <div class="source-card"><strong>[1] Java并发编程核心.pdf</strong><span class="muted">点击展开来源片段</span></div>
+                </div>
+              </div>
+              <div class="bubble ai failed" style="width: 100%;">
+                <span class="tag danger">回答失败</span>
+                <p style="margin: 8px 0;">网络异常，已保留你的问题。</p>
+                <button class="btn" type="button">重试发送</button>
+              </div>
+            </div>
+            <div class="mobile-composer"><input class="input" value="继续追问源码细节"><button class="btn primary icon" type="button">→</button></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>7. 历史会话与我的页面</h2>
+          <p class="section-note">历史页用于快速定位旧问题；我的页面第一版保持轻量，重点是账号信息和退出登录。</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="device span-6">
+          <div class="device-title">Web 历史会话</div>
+          <div class="screen web">
+            <div class="topbar">
+              <div class="brand"><span class="brand-mark">S</span><span>历史会话</span></div>
+              <input class="search" value="搜索问题、知识库或摘要">
+            </div>
+            <div class="page">
+              <div class="list">
+                <div class="list-item">
+                  <span class="icon-box">Q</span>
+                  <div><strong>HashMap 扩容机制</strong><p class="muted" style="margin: 4px 0 0;">Java 基础八股 · 最后一条：JDK 1.8 中 ConcurrentHashMap...</p></div>
+                  <div class="btn-row"><span class="tag">10 分钟前</span><button class="btn" type="button">继续追问</button></div>
+                </div>
+                <div class="list-item">
+                  <span class="icon-box">Q</span>
+                  <div><strong>Redis 缓存穿透怎么解决</strong><p class="muted" style="margin: 4px 0 0;">Redis 高频题 · 最后一条：布隆过滤器适合在...</p></div>
+                  <div class="btn-row"><span class="tag">昨天</span><button class="btn" type="button">继续追问</button></div>
+                </div>
+                <div class="list-item">
+                  <span class="icon-box">Q</span>
+                  <div><strong>MySQL 索引失效场景</strong><p class="muted" style="margin: 4px 0 0;">MySQL 面试专题 · 最后一条：like 前缀通配符...</p></div>
+                  <div class="btn-row"><span class="tag">周一</span><button class="btn danger" type="button">删除</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="device phone span-6">
+          <div class="device-title">Mobile 我的页面</div>
+          <div class="screen phone-page">
+            <div class="status-bar"><span>9:41</span><span>StudyMate</span></div>
+            <div class="topbar"><strong>我的</strong></div>
+            <div class="phone-content">
+              <div class="mini-card">
+                <div class="card-head">
+                  <div class="brand"><span class="avatar">赵</span><div><strong>小赵</strong><div class="muted">backend_dev</div></div></div>
+                </div>
+              </div>
+              <div class="mini-cards" style="margin-top: 12px;">
+                <div class="mini-card"><div class="card-head"><strong>知识库数量</strong><span>6</span></div></div>
+                <div class="mini-card"><div class="card-head"><strong>历史会话</strong><span>42</span></div></div>
+                <div class="mini-card"><div class="card-head"><strong>已处理文件</strong><span>28</span></div></div>
+              </div>
+              <button class="btn danger full" style="margin-top: 18px;" type="button">退出登录</button>
+            </div>
+            <nav class="bottom-nav"><a href="#">知识库</a><a href="#">历史</a><a class="active" href="#">我的</a></nav>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>8. 关键状态草图</h2>
+          <p class="section-note">状态组件用于统一空、加载、处理中、成功、失败、删除确认、网络异常和 AI 流式生成。</p>
+        </div>
+      </div>
+      <div class="states">
+        <div class="state-card">
+          <span class="tag">空状态</span>
+          <div class="empty-mark" style="width: 48px; height: 48px; margin-top: 14px;">KB</div>
+          <h3>还没有文件</h3>
+          <p class="muted">上传资料后才能开始基于知识库问答。</p>
+          <button class="btn primary" type="button">上传文件</button>
+        </div>
+        <div class="state-card">
+          <span class="tag">加载中</span>
+          <div class="skeleton" style="margin-top: 20px;">
+            <span class="sk-line" style="width: 70%;"></span>
+            <span class="sk-line" style="width: 92%;"></span>
+            <span class="sk-line" style="width: 84%;"></span>
+            <span class="sk-line" style="width: 56%;"></span>
+          </div>
+        </div>
+        <div class="state-card">
+          <span class="tag warning">处理中</span>
+          <h3 style="margin-top: 14px;">正在建立检索索引</h3>
+          <p class="muted">文件已解析完成，正在写入向量库。</p>
+          <div class="progress"><span style="width: 72%;"></span></div>
+        </div>
+        <div class="state-card">
+          <span class="tag danger">失败</span>
+          <h3 style="margin-top: 14px;">文件解析失败</h3>
+          <p class="muted">当前文件编码无法识别，可重新上传 UTF-8 文件。</p>
+          <button class="btn" type="button">重新上传</button>
+        </div>
+        <div class="state-card">
+          <span class="tag success">成功</span>
+          <h3 style="margin-top: 14px;">知识库已可问答</h3>
+          <p class="muted">已生成 1,284 个知识分片。</p>
+          <button class="btn primary" type="button">开始问答</button>
+        </div>
+        <div class="state-card">
+          <span class="tag danger">删除确认</span>
+          <h3 style="margin-top: 14px;">删除知识库？</h3>
+          <p class="muted">删除后文件、分片和会话记录都会移除。</p>
+          <div class="btn-row"><button class="btn" type="button">取消</button><button class="btn danger" type="button">删除知识库</button></div>
+        </div>
+        <div class="state-card">
+          <span class="tag danger">网络异常</span>
+          <h3 style="margin-top: 14px;">请求没有发送成功</h3>
+          <p class="muted">你的输入已保留，可检查网络后重试。</p>
+          <button class="btn" type="button">重试</button>
+        </div>
+        <div class="state-card">
+          <span class="tag warning">AI 流式生成</span>
+          <h3 style="margin-top: 14px;">正在基于资料回答</h3>
+          <p class="muted">已检索到 3 条相关来源，答案生成中。</p>
+          <div class="progress"><span style="width: 38%;"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>9. 组件与 Token 草图</h2>
+          <p class="section-note">这里把设计系统的颜色、组件和密度翻译成可视草图，方便设计与前端对齐。</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="span-6">
+          <h3>色彩</h3>
+          <div class="palette">
+            <div class="swatch"><span style="background: #256d85;"></span><small>Primary<br>#256D85</small></div>
+            <div class="swatch"><span style="background: #eaf5f7;"></span><small>Primary Soft<br>#EAF5F7</small></div>
+            <div class="swatch"><span style="background: #f59e0b;"></span><small>Accent<br>#F59E0B</small></div>
+            <div class="swatch"><span style="background: #16a34a;"></span><small>Success<br>#16A34A</small></div>
+            <div class="swatch"><span style="background: #dc2626;"></span><small>Danger<br>#DC2626</small></div>
+            <div class="swatch"><span style="background: #172026;"></span><small>Text<br>#172026</small></div>
+          </div>
+        </article>
+        <article class="span-6">
+          <h3>组件密度</h3>
+          <div class="spec-table">
+            <div class="spec-tile"><strong>按钮</strong><p class="muted">44px 高，6px 圆角。</p><button class="btn primary" type="button">主按钮</button></div>
+            <div class="spec-tile"><strong>输入</strong><p class="muted">固定 label，聚焦主色。</p><input class="input" value="问题关键词"></div>
+            <div class="spec-tile"><strong>标签</strong><p class="muted">浅底色 + 深文字。</p><span class="tag success">可问答</span></div>
+            <div class="spec-tile"><strong>卡片</strong><p class="muted">边框区分，不用厚阴影。</p><div class="mini-card">8px 圆角</div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

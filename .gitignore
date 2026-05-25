@@ -32,3 +32,6 @@ temp/
 
 # Local docs
 docs/
+
+# Local tools
+tools/
