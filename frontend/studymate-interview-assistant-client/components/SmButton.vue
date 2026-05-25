@@ -33,6 +33,7 @@ export default {
 	border-radius: $sm-radius-sm;
 	font-size: $sm-font-size-body;
 	font-weight: 700;
+	transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease, opacity 180ms ease;
 
 	&.primary {
 		color: $sm-color-text-inverse;
@@ -63,8 +64,22 @@ export default {
 	}
 }
 
+.sm-button:active {
+	transform: translateY(2rpx) scale(0.99);
+}
+
+.sm-button.primary:active {
+	box-shadow: 0 10rpx 20rpx rgba(37, 109, 133, 0.18);
+}
+
 .sm-button__icon {
 	width: 32rpx;
 	height: 32rpx;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sm-button {
+		transition: none;
+	}
 }
 </style>

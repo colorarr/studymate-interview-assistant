@@ -1,0 +1,9 @@
+server:
+  port: 8080
+spring:
+  ai:
+    dashscope:
+      api-key: sk-f74a9ae9721b49c4a69434373ce36475
+    openai:
+      api-key: sk-cpu3ymjqtup1kxn69hv7lycrmo3o7n8q58w7g8dxg2ds56h2
+#      base-url: https://your-provider.com/v1
