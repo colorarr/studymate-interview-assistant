@@ -46,14 +46,6 @@ studymate-interview-assistant/
 - JWT
 - SSE
 
-## API 文档
-
-OpenAPI 文档位于：
-
-- `../studymate-ai-server/docs/apifox/studymate-ai-openapi.yaml`
-
-后续可将稳定版本复制到当前仓库的 `docs/apifox/` 目录下统一维护。
-
 ## 开发约定
 
 - 所有状态字段统一使用数字类型表示
