@@ -1,17 +1,97 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/register/register",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/knowledge/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/knowledge/detail",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/knowledge/create",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/upload/upload",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/chat/chat",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/history/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/profile/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationStyle": "custom"
 			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarTitleText": "StudyMate",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#F6F8FA"
+	},
+	"tabBar": {
+		"color": "#7A8A95",
+		"selectedColor": "#256D85",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		"list": [
+			{
+				"pagePath": "pages/knowledge/index",
+				"text": "知识库",
+				"iconPath": "static/assest/icon-knowledge-base.png",
+				"selectedIconPath": "static/assest/icon-knowledge-base.png"
+			},
+			{
+				"pagePath": "pages/history/index",
+				"text": "历史",
+				"iconPath": "static/assest/icon-history.png",
+				"selectedIconPath": "static/assest/icon-history.png"
+			},
+			{
+				"pagePath": "pages/profile/index",
+				"text": "我的",
+				"iconPath": "static/assest/icon-user.png",
+				"selectedIconPath": "static/assest/icon-user.png"
+			}
+		]
 	},
 	"uniIdRouter": {}
 }
